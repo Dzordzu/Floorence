@@ -1,0 +1,22 @@
+{
+  "name": "florence",
+  "version": "0.2.0",
+  "description": "JS library for PJAX operations",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "PJAX",
+    "Florence"
+  ],
+  "author": "Dzordzu",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-loader": "^8.0.2",
+    "mocha": "^5.2.0",
+    "webpack": "^4.18.0"
+  },
+  "dependencies": {}
+}
