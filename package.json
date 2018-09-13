@@ -12,10 +12,11 @@
     "PJAX",
     "Florence"
   ],
-  "author": "Dzordzu",
+  "author": "Dzordzu <tomekdur@wp.pl>",
   "license": "ISC",
   "devDependencies": {
-    "babel-core": "^6.26.3",
+    "@babel/core": "^7.0.1",
+    "@babel/preset-env": "^7.0.0",
     "babel-loader": "^8.0.2",
     "mocha": "^5.2.0",
     "webpack": "^4.18.0",
