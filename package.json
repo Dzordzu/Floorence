@@ -1,6 +1,6 @@
 {
-  "name": "florence",
-  "version": "0.2.0",
+  "name": "floorence",
+  "version": "0.1.0",
   "description": "JS library for PJAX. The beautiful one",
   "main": "dist/florence.js",
   "scripts": {
@@ -10,7 +10,7 @@
   },
   "keywords": [
     "PJAX",
-    "Florence"
+    "Floorence"
   ],
   "author": "Dzordzu <tomekdur@wp.pl>",
   "license": "ISC",
