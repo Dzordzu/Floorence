@@ -36,7 +36,7 @@ describe('Errors', function() {
       let expUserMessage = test.expected.userMessage || userMessage;
       let expGetUserMessage = expUserMessage || 'Whoops... Something went wrong';
 
-      it(`Should catch Floorence Error with proper value #${index}`, function() {
+      it(`Asserting catching Floorence Error with proper values #${index}`, function() {
         try {
           throw new FloorenceError(message, {
             number: number,
