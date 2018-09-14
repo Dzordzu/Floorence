@@ -36,9 +36,9 @@ export default class FloorenceError extends Error {
     /**
      * We should assign proper values
      */
-    this.userMessage = options.userMessage || this.default.userMessage;
-    this.number = options.number || this.default.number;
-    this.developerMode = options.developerMode || this.default.developerMode;
+    this.userMessage = String(options.userMessage) || this.default.userMessage;
+    this.number = parseInt(options.number) || this.default.number;
+    this.developerMode = Boolean(options.developerMode) || this.default.developerMode;
 
 
     Object.defineProperty(this, 'getUserMessage', {
