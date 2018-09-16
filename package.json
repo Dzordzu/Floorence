@@ -6,10 +6,10 @@
   "scripts": {
     "build": "webpack",
     "dev": "webpack --dev --watch",
-    "test": "mocha  --require @babel/register './**/*.test.js'",
-    "test-unit": "mocha  --require @babel/register './test/UnitTesting/*.test.js'",
-    "test-integration": "mocha  --require @babel/register './test/IntegrationTesting/*.test.js'",
-    "test-system": "mocha  --require @babel/register './test/SystemTesting/*.test.js'"
+    "test": "mocha  --require @babel/register './tests/**/*.test.js'",
+    "test-unit": "mocha  --require @babel/register './tests/UnitTesting/*.test.js'",
+    "test-integration": "mocha  --require @babel/register './tests/IntegrationTesting/*.test.js'",
+    "test-system": "mocha  --require @babel/register './tests/SystemTesting/*.test.js'"
   },
   "keywords": [
     "PJAX",
