@@ -2,38 +2,68 @@
 export default class UrlsQueue {
   constructor() {
 
-    let queueElementsLimit = 2;
-    let universalUserError = 'Something is wrong with the URL you want to visit';
-
+    let limit = 1;
     let queue = [];
+    let replaceOnLimitExceed = true;
 
+
+    function setLimit(lim) {
+      queue.splice(1);
+      limit = lim;
+    }
+
+    function setReplaceOnLimitExceed(value) {
+      replaceOnLimitExceed = value;
+    }
 
     function validate(url) {
-      if(typeof url.real !== 'string') {
-        throw new ContentLoaderStatesError('UrlsQueue: url.real has to be a string', universalUserError);
-        return false;
-      }
+        if(typeof url !== 'object') {
+          return false;
+        }
 
-      if(typeof url.display !== 'string' && url.display !== null && url.display !== undefined) {
-        throw new ContentLoaderStatesError('UrlsQueue: url.display has to be undefined, string or null', universalUserError);
-        return false;
-      }
+        if(typeof url.real !== 'string') {
+          //throw new ContentLoaderStatesError('UrlsQueue: url.real has to be a string', universalUserError);
+          return false;
+        }
 
+        if(typeof url.display !== 'string' && url.display !== undefined) {
+          //throw new ContentLoaderStatesError('UrlsQueue: url.display has to be undefined, string or null', universalUserError);
+          return false;
+        }
       return true;
     }
 
 
-    function push(url) {
-      if(validate(url)) {
-        if(queue.length < queueElementsLimit) queue.push(url);
-        else queue[queueElementsLimit - 1] = url;
+    function strToObj(url) {
+      if(typeof url === 'string') {
+        url = {
+          real: url,
+          display: url
+        };
+      }
+      return url;
+    }
 
+
+    function push(url) {
+
+      url = strToObj(url);
+
+      if(validate(url)) {
+        if(queue.length < limit) queue.push(url);
+        else {
+          if(replaceOnLimitExceed) queue[limit - 1] = url;
+          else return false;
+        }
         return queue.length - 1;
       }
       else return false;
     }
 
     function replace(url, index=0) {
+
+      url = strToObj(url);
+
       if(validate(url)) {
         queue[index] = url;
         return true;
@@ -42,7 +72,7 @@ export default class UrlsQueue {
     }
 
     function toNext() {
-      queue.splice(0, 1);
+      queue.shift();
       return queue.length > 0 ? true : false;
     }
 
@@ -58,7 +88,9 @@ export default class UrlsQueue {
       return queue;
     }
 
-
+    Object.defineProperty(this, 'setLimit', {value: setLimit});
+    Object.defineProperty(this, 'getLimit', {value: ()=>limit});
+    Object.defineProperty(this, 'replaceOnLimitExceed', {value: setReplaceOnLimitExceed});
     Object.defineProperty(this, 'push', {value: push});
     Object.defineProperty(this, 'replace', {value: replace});
     Object.defineProperty(this, 'toNext', {value: toNext});

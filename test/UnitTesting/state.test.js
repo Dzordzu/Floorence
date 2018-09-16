@@ -1,12 +1,14 @@
 
 import { assert } from 'chai'
 import Status from './../../src/StateManager/Status.js';
+import UrlsQueue from './../../src/StateManager/UrlsQueue.js';
 import FloorenceStateError from './../../src/Errors/FloorenceStateError.js';
 
 /**
- * Predefine status
+ * Predefine status and urlsQueue
  */
 let status;
+let urlsQueue;
 
 /**
  * Prepare data for testing
@@ -38,42 +40,45 @@ let testing = {
       ['idle', 'idle'],
       ['showing', 'idle']
     ]
+  },
+
+
+  urlsQueue: {
+
   }
 }
 
-describe('StateManager', function() {
+describe('StateManager - Statuses', function() {
 
-  describe('#Statuses - naming', function() {
+  describe('# Naming', function() {
 
-    testing.statuses.improperNames.namingConvention.forEach((name, index) => {
-
-      /**
-       * Naming convention
-       */
-      it(`Asserting wrong name of the queue element (naming convention) #${index}`, function(){
-        assert.throws(() => {
-          status = new Status([name]);
-        }, FloorenceStateError, `Invalid name: ${name}. The name of the status must start from the letter or the underscore and has to be alphanumeric (latin alphabet, underscores are also permitted)`
-      )});
+    describe('## Naming convention', function() {
+      testing.statuses.improperNames.namingConvention.forEach((name, index) => {
+        it(`Asserting wrong name of the queue element #${index}`, function(){
+          assert.throws(() => {
+            status = new Status([name]);
+          }, FloorenceStateError, `Invalid name: ${name}. The name of the status must start from the letter or the underscore and has to be alphanumeric (latin alphabet, underscores are also permitted)`
+        )});
+      });
     });
 
-    /**
-     * Reserved keywords
-     */
-    testing.statuses.improperNames.reservedKeywords.forEach((name, index) => {
-      it(`Asserting wrong name of the queue element (reserved keywords) #${index}`, function(){
-        assert.throws(() => {
-          status = new Status([name]);
-        }, FloorenceStateError, `Invalid name: ${name}. This is our reserved keyword`
-      )});
+    describe('## Reserved keywords', function() {
+      testing.statuses.improperNames.reservedKeywords.forEach((name, index) => {
+        it(`Asserting wrong name of the queue element #${index}`, function(){
+          assert.throws(() => {
+            status = new Status([name]);
+          }, FloorenceStateError, `Invalid name: ${name}. This is our reserved keyword`
+        )});
+      });
     });
+
 
 
 
   });
 
 
-  describe('#Statuses - ordered tests', function() {
+  describe('# Ordered tests', function() {
     before(function() {
       status = new Status(testing.statuses.queue);
     })
@@ -175,3 +180,122 @@ describe('StateManager', function() {
     });
   });
 });
+
+
+
+describe('StateManager - UrlsQueue', function() {
+  describe('# Ordered tests', function() {
+
+    before(function() {
+      urlsQueue = new UrlsQueue;
+    });
+
+    it('setLimit(3), getLimit()', function() {
+      assert.strictEqual(urlsQueue.setLimit(3), undefined, 'setLimit() returning wrong value');
+      assert.strictEqual(urlsQueue.getLimit(), 3, 'Wrong limit');
+    });
+
+    it('all and getAll()', function() {
+      assert.deepEqual(urlsQueue.all, [], 'How did you do this? all returns improper value');
+      assert.deepEqual(urlsQueue.getAll(), [], 'You are a talented human... getAll() returns improper value');
+    });
+
+    it('current and getCurrent()', function() {
+      assert.strictEqual(urlsQueue.current, undefined, 'HAHAHAHHA. You couldn\'t check the value of the first element in the queue via current');
+      assert.strictEqual(urlsQueue.getCurrent(), undefined, 'getCurrent() is in a wrong. As you are');
+    });
+
+    it('push("lol/xD")', function() {
+      assert.strictEqual(urlsQueue.push('lol/xD'), 0, 'push() returns improper value');
+      assert.deepEqual(
+        urlsQueue.getCurrent(),
+        {real: 'lol/xD', display: 'lol/xD'},
+        'The urls wasn\'t added to the queue'
+      );
+    });
+
+    it('push({real: "http://test.pl"}), getNext()', function() {
+      assert.strictEqual(urlsQueue.push({real: "http://test.pl"}), 1, 'push() returns improper value');
+      assert.deepEqual(urlsQueue.getNext(), {real: "http://test.pl"}, 'The urls wasn\'t added to the queue or getNext() doesn\'t work');
+
+      assert.deepEqual(
+        urlsQueue.getAll(),
+        [
+          {real: 'lol/xD', display: 'lol/xD'},
+          {real: "http://test.pl"},
+        ],
+        'The urls wasn\'t added to the queue or something is wrong with getAll()'
+      );
+    });
+
+    it('push({real: "/well/well/well", display: "ss"})', function() {
+      assert.strictEqual(urlsQueue.push({real: "/well/well/well", display: "ss"}), 2, 'push() returns improper value');
+      assert.deepEqual(
+        urlsQueue.getAll(),
+        [
+          {real: 'lol/xD', display: 'lol/xD'},
+          {real: "http://test.pl"},
+          {real: "/well/well/well", display: "ss"}
+        ],
+        'The urls wasn\'t added to the queue or something is wrong with getAll()'
+      );
+    });
+
+    it('push("x") - should replace third value', function() {
+      assert.strictEqual(urlsQueue.push("x"), 2, 'push() returns improper value');
+      assert.deepEqual(
+        urlsQueue.getAll(),
+        [
+          {real: 'lol/xD', display: 'lol/xD'},
+          {real: "http://test.pl"},
+          {real: "x", display: "x"}
+        ],
+        'The urls wasn\'t added to the queue or something is wrong with getAll()'
+      );
+    });
+
+    it('replace("xs", 1)', function() {
+      assert.strictEqual(urlsQueue.replace("xs", 1), true, 'replace() returns improper value');
+      assert.deepEqual(urlsQueue.getNext(), {real: "xs", display: "xs"}, 'The urls wasn\'t added to the queue or getNext() doesn\'t work');
+      assert.deepEqual(
+        urlsQueue.getAll(),
+        [
+          {real: 'lol/xD', display: 'lol/xD'},
+          {real: "xs", display: "xs"},
+          {real: "x", display: "x"}
+        ],
+        'The urls wasn\'t added to the queue or something is wrong with getAll()'
+      );
+    });
+
+    it('toNext()', function() {
+      assert.strictEqual(urlsQueue.toNext(), true, 'toNext() returns improper value');
+      assert.deepEqual(urlsQueue.getAll(),
+      [
+        {real: "xs", display: "xs"},
+        {real: "x", display: "x"}
+      ],
+      'The urls wasn\'t moved to next');
+    });
+
+    it('setLimit(1) - should remove elements that exceed the limit', function() {
+      urlsQueue.setLimit(1);
+      assert.strictEqual(urlsQueue.getLimit(), 1, 'Wrong limit');
+      assert.deepEqual(urlsQueue.getAll(), [{real: 'xs', display: 'xs'}], 'Something is wrong. getAll() or setLimit() has to be fixed');
+    });
+    it('push("goodBoi") - the last element is simultaneously the first one', function() {
+      assert.strictEqual(urlsQueue.push("goodBoi"), 0, 'push() returns improper value');
+      assert.deepEqual(urlsQueue.getAll(), [{real: 'goodBoi', display: 'goodBoi'}], 'The urls wasn\'t added to the queue or something is wrong with getAll()');
+    });
+
+    it('replaceOnLimitExceed(false), push()', function() {
+      assert.strictEqual(urlsQueue.replaceOnLimitExceed(false), undefined, 'Wrong returned value');
+      assert.strictEqual(urlsQueue.push('test'), false, 'push() is returning improper value');
+      assert.deepEqual(urlsQueue.getCurrent(), {real: 'goodBoi', display: 'goodBoi'}, 'Simply - it does NOT work');
+    });
+
+
+
+
+  });
+})
