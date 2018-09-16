@@ -18,6 +18,10 @@
   ],
   "author": "Dzordzu <tomekdur@wp.pl>",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Dzordzu/Floorence"
+  },
   "devDependencies": {
     "@babel/core": "^7.0.1",
     "@babel/preset-env": "^7.0.0",
