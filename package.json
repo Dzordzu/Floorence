@@ -1,6 +1,6 @@
 {
   "name": "floorence",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "JS library for PJAX. The beautiful one",
   "main": "dist/florence.js",
   "scripts": {
