@@ -202,107 +202,88 @@ describe('StateManager - UrlsQueue', function() {
     });
 
     it('setLimit(3), getLimit()', function() {
-      assert.strictEqual(urlsQueue.setLimit(3), undefined, 'setLimit() returning wrong value');
-      assert.strictEqual(urlsQueue.getLimit(), 3, 'Wrong limit');
+      expect(urlsQueue.setLimit(3), 'setLimit() returning wrong value').to.be.undefined;
+      expect(urlsQueue.getLimit(), 'Wrong limit').to.equal(3);
     });
 
     it('all and getAll()', function() {
-      assert.deepEqual(urlsQueue.all, [], 'How did you do this? all returns improper value');
-      assert.deepEqual(urlsQueue.getAll(), [], 'You are a talented human... getAll() returns improper value');
+      expect(urlsQueue.all, 'How did you do this? all returns improper value').to.deep.equal([]);
+      expect(urlsQueue.getAll(), 'You are a talented man... getAll() returns improper value').to.deep.equal([]);
     });
 
     it('current and getCurrent()', function() {
-      assert.strictEqual(urlsQueue.current, undefined, 'HAHAHAHHA. You couldn\'t check the value of the first element in the queue via current');
-      assert.strictEqual(urlsQueue.getCurrent(), undefined, 'getCurrent() is in a wrong. As you are');
+      expect(urlsQueue.current, 'HAHAHAHHA. You couldn\'t check the value of the first element in the queue via current').to.be.undefined;
+      expect(urlsQueue.getCurrent(), 'getCurrent() is in a wrong. As you are').to.be.undefined;
     });
 
     it('push("lol/xD")', function() {
-      assert.strictEqual(urlsQueue.push('lol/xD'), 0, 'push() returns improper value');
-      assert.deepEqual(
-        urlsQueue.getCurrent(),
-        {real: 'lol/xD', display: 'lol/xD'},
-        'The urls wasn\'t added to the queue'
-      );
+      expect(urlsQueue.push('lol/xD'), 'push() returns improper value').to.equal(0);
+      expect(urlsQueue.getCurrent(), 'The urls wasn\'t added to the queue').to.deep.equal({real: 'lol/xD', display: 'lol/xD'});
     });
 
     it('push({real: "http://test.pl"}), getNext()', function() {
-      assert.strictEqual(urlsQueue.push({real: "http://test.pl"}), 1, 'push() returns improper value');
-      assert.deepEqual(urlsQueue.getNext(), {real: "http://test.pl"}, 'The urls wasn\'t added to the queue or getNext() doesn\'t work');
-
-      assert.deepEqual(
-        urlsQueue.getAll(),
-        [
-          {real: 'lol/xD', display: 'lol/xD'},
-          {real: "http://test.pl"},
-        ],
-        'The urls wasn\'t added to the queue or something is wrong with getAll()'
-      );
+      expect(urlsQueue.push({real: "http://test.pl"}), 'push() returns improper value').to.equal(1);
+      expect(urlsQueue.getNext(), 'The urls wasn\'t added to the queue or getNext() doesn\'t work').to.deep.equal({real: "http://test.pl"});
+      expect(urlsQueue.getAll(), 'The urls wasn\'t added to the queue or something is wrong with getAll()').to.deep.equal([
+        {real: 'lol/xD', display: 'lol/xD'},
+        {real: "http://test.pl"}
+      ]);
     });
 
     it('push({real: "/well/well/well", display: "ss"})', function() {
-      assert.strictEqual(urlsQueue.push({real: "/well/well/well", display: "ss"}), 2, 'push() returns improper value');
-      assert.deepEqual(
-        urlsQueue.getAll(),
-        [
-          {real: 'lol/xD', display: 'lol/xD'},
-          {real: "http://test.pl"},
-          {real: "/well/well/well", display: "ss"}
-        ],
-        'The urls wasn\'t added to the queue or something is wrong with getAll()'
-      );
+      expect(urlsQueue.push({real: "/well/well/well", display: "ss"}), 'push() returns improper value').to.equal(2);
+      expect(urlsQueue.getAll(), 'The urls wasn\'t added to the queue or something is wrong with getAll()').to.deep.equal([
+        {real: 'lol/xD', display: 'lol/xD'},
+        {real: "http://test.pl"},
+        {real: "/well/well/well", display: "ss"}
+      ]);
     });
 
     it('push("x") - should replace third value', function() {
-      assert.strictEqual(urlsQueue.push("x"), 2, 'push() returns improper value');
-      assert.deepEqual(
-        urlsQueue.getAll(),
-        [
-          {real: 'lol/xD', display: 'lol/xD'},
-          {real: "http://test.pl"},
-          {real: "x", display: "x"}
-        ],
-        'The urls wasn\'t added to the queue or something is wrong with getAll()'
-      );
+      expect(urlsQueue.push("x"), 'push() returns improper value').to.equal(2);
+      expect(urlsQueue.getAll(), 'The urls wasn\'t added to the queue or something is wrong with getAll()').to.deep.equal([
+        {real: 'lol/xD', display: 'lol/xD'},
+        {real: "http://test.pl"},
+        {real: "x", display: "x"}
+      ]);
     });
 
     it('replace("xs", 1)', function() {
-      assert.strictEqual(urlsQueue.replace("xs", 1), true, 'replace() returns improper value');
-      assert.deepEqual(urlsQueue.getNext(), {real: "xs", display: "xs"}, 'The urls wasn\'t added to the queue or getNext() doesn\'t work');
-      assert.deepEqual(
-        urlsQueue.getAll(),
-        [
-          {real: 'lol/xD', display: 'lol/xD'},
-          {real: "xs", display: "xs"},
-          {real: "x", display: "x"}
-        ],
-        'The urls wasn\'t added to the queue or something is wrong with getAll()'
-      );
+      expect(urlsQueue.replace("xs", 1), 'replace() returns improper value').to.be.true;
+      expect(urlsQueue.getNext(), 'The urls wasn\'t added to the queue or getNext() doesn\'t work').to.deep.equal({real: "xs", display: "xs"});
+      expect(urlsQueue.getAll(), 'The urls wasn\'t added to the queue or something is wrong with getAll()').to.deep.equal([
+        {real: 'lol/xD', display: 'lol/xD'},
+        {real: "xs", display: "xs"},
+        {real: "x", display: "x"}
+      ]);
     });
 
     it('toNext()', function() {
-      assert.strictEqual(urlsQueue.toNext(), true, 'toNext() returns improper value');
-      assert.deepEqual(urlsQueue.getAll(),
-      [
+      expect(urlsQueue.toNext(), 'toNext() returns improper value').to.be.true;
+      expect(urlsQueue.getAll(), 'The urls hasn\'t been moved to next').to.deep.equal([
         {real: "xs", display: "xs"},
         {real: "x", display: "x"}
-      ],
-      'The urls wasn\'t moved to next');
+      ]);
     });
 
     it('setLimit(1) - should remove elements that exceed the limit', function() {
       urlsQueue.setLimit(1);
-      assert.strictEqual(urlsQueue.getLimit(), 1, 'Wrong limit');
-      assert.deepEqual(urlsQueue.getAll(), [{real: 'xs', display: 'xs'}], 'Something is wrong. getAll() or setLimit() has to be fixed');
+      expect(urlsQueue.getLimit(), 'Wrong limit').to.equal(1);
+      expect(urlsQueue.getAll(), 'Something is wrong. getAll() or setLimit() has to be fixed').to.deep.equal([
+        {real: 'xs', display: 'xs'}
+      ]);
     });
     it('push("goodBoi") - the last element is simultaneously the first one', function() {
-      assert.strictEqual(urlsQueue.push("goodBoi"), 0, 'push() returns improper value');
-      assert.deepEqual(urlsQueue.getAll(), [{real: 'goodBoi', display: 'goodBoi'}], 'The urls wasn\'t added to the queue or something is wrong with getAll()');
+      expect(urlsQueue.push("goodBoi"), 'push() returns improper value').to.equal(0);
+      expect(urlsQueue.getAll(), 'The urls wasn\'t added to the queue or something is wrong with getAll()').to.deep.equal([
+        {real: 'goodBoi', display: 'goodBoi'}
+      ]);
     });
 
     it('replaceOnLimitExceed(false), push()', function() {
-      assert.strictEqual(urlsQueue.replaceOnLimitExceed(false), undefined, 'Wrong returned value');
-      assert.strictEqual(urlsQueue.push('test'), false, 'push() is returning improper value');
-      assert.deepEqual(urlsQueue.getCurrent(), {real: 'goodBoi', display: 'goodBoi'}, 'Simply - it does NOT work');
+      expect(urlsQueue.replaceOnLimitExceed(false), 'Wrong returned value').to.be.undefined;
+      expect(urlsQueue.push('test'), 'push() is returning improper value').to.be.false;
+      expect(urlsQueue.getCurrent(), 'Simply - it does NOT work').to.deep.equal({real: 'goodBoi', display: 'goodBoi'});
     });
 
 
