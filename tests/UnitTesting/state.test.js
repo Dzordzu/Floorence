@@ -1,5 +1,6 @@
 
 import { assert } from 'chai'
+import { expect } from 'chai'
 import Status from './../../src/StateManager/Status.js';
 import UrlsQueue from './../../src/StateManager/UrlsQueue.js';
 import FloorenceStateError from './../../src/Errors/FloorenceStateError.js';
@@ -19,11 +20,21 @@ let testing = {
     /**
      * Test names of the queue elements
      */
-    improperNames: {
-      namingConvention: ['idle-state', 'green!', '34yellow', 'sth@poll', '!green'],
-      reservedKeywords: ['getNext', 'getCurrent', 'current', 'next', 'toInitial', 'before', 'after']
+    naming: {
+      /**
+       * Each error starts with "Invalid name: ${name}. " then errorMessage is added to it
+       */
+      errorMessages: {
+        namingConvention: 'The name of the status must start from the letter or the underscore and has to be alphanumeric (latin alphabet, underscores are also permitted)',
+        reservedKeywords: 'This is our reserved keyword'
+      },
+      improperNames: {
+        namingConvention: ['idle-state', 'green!', '34yellow', 'sth@poll', '!green'],
+        reservedKeywords: ['getNext', 'getCurrent', 'current', 'next', 'toInitial', 'before', 'after']
+      },
+      properNames: ['yellow34'],
     },
-    properNames: ['yellow34'],
+
 
     /**
      * Define queue for the ordered tests
@@ -51,30 +62,32 @@ let testing = {
 describe('StateManager - Statuses', function() {
 
   describe('# Naming', function() {
+    /**
+     * Foreach test name...
+     */
+    Object.keys(testing.statuses.naming.improperNames).forEach((testName) => {
+      describe(`## ${testName}`, function() {
+        /**
+         *  prepare tests...
+         */
+        testing.statuses.naming.improperNames[testName].forEach((name, index) => {
+          it(`Expecting wrong name of the queue element #${index}`, function() {
 
-    describe('## Naming convention', function() {
-      testing.statuses.improperNames.namingConvention.forEach((name, index) => {
-        it(`Asserting wrong name of the queue element #${index}`, function(){
-          assert.throws(() => {
-            status = new Status([name]);
-          }, FloorenceStateError, `Invalid name: ${name}. The name of the status must start from the letter or the underscore and has to be alphanumeric (latin alphabet, underscores are also permitted)`
-        )});
+            /**
+             * with proper message...
+             */
+            let errMsg = function(name) {
+              return `Invalid name: ${name}. ${testing.statuses.naming.errorMessages[testName]}`;
+            }
+
+            expect(() => {
+              status = new Status([name]);
+            }, "Something is wrong with the thrown error").to.throw(FloorenceStateError, errMsg(name));
+
+          });
+        });
       });
     });
-
-    describe('## Reserved keywords', function() {
-      testing.statuses.improperNames.reservedKeywords.forEach((name, index) => {
-        it(`Asserting wrong name of the queue element #${index}`, function(){
-          assert.throws(() => {
-            status = new Status([name]);
-          }, FloorenceStateError, `Invalid name: ${name}. This is our reserved keyword`
-        )});
-      });
-    });
-
-
-
-
   });
 
 
@@ -86,102 +99,100 @@ describe('StateManager - Statuses', function() {
     /**
      * Check current status
      */
-    it(`Asserting that both current and getCurrent() return "${testing.statuses.queue[0]}"`, function() {
-      assert.strictEqual(status.current, testing.statuses.queue[0], 'current has got improper value');
-      assert.strictEqual(status.getCurrent(), testing.statuses.queue[0], 'getCurrent() has got improper value');
+    it(`current and getCurrent() return "${testing.statuses.queue[0]}"`, function() {
+      expect(status.current, 'current has got improper value').to.equal(testing.statuses.queue[0]);
+      expect(status.getCurrent(), 'getCurrent() has got improper value').to.equal(testing.statuses.queue[0]);
     });
 
     /**
      * Check next status
      */
-    it(`Asserting that both next and getNext() return "${testing.statuses.queue[1]}"`, function() {
-      assert.strictEqual(status.next, testing.statuses.queue[1], 'next has got improper value');
-      assert.strictEqual(status.getNext(), testing.statuses.queue[1], 'getNext() has got improper value');
+    it(`next and getNext() return "${testing.statuses.queue[1]}"`, function() {
+      expect(status.next, 'next has got improper value').to.equal(testing.statuses.queue[1]);
+      expect(status.getNext(), 'getNext() has got improper value').to.equal(testing.statuses.queue[1]);
     });
 
     /**
      * Check 1->3
      */
-    it(`Asserting ${testing.statuses.queue[2]}(true) NOT changing status to "${testing.statuses.queue[2]}" and returning false`, function() {
-      assert.strictEqual(
-        status[testing.statuses.queue[2]](true),
-        false, 'Returns improper value');
-      assert.strictEqual(status.getCurrent(), testing.statuses.queue[0], 'Status is improper');
+    it(`${testing.statuses.queue[2]}(true) shouldn't change status to "${testing.statuses.queue[2]}"`, function() {
+      expect(status[testing.statuses.queue[2]](true), 'Returns improper value').to.be.false;
+      expect(status.getCurrent(), 'Status is improper').to.equal(testing.statuses.queue[0]);
     });
 
     /**
      * Check 1->2
      */
-    it(`Asserting ${testing.statuses.queue[1]}(true) changing status to "${testing.statuses.queue[1]}" and returning true`, function() {
-      assert.strictEqual(status[testing.statuses.queue[1]](true),
-      true, 'Returns improper value');
-      assert.strictEqual(status.getCurrent(), testing.statuses.queue[1], 'Status is improper');
+    it(`${testing.statuses.queue[1]}(true) changing status to "${testing.statuses.queue[1]}" and returning true`, function() {
+      expect(status[testing.statuses.queue[1]](true), 'Returns improper value').to.be.true;
+      expect(status.getCurrent(), 'Status is improper').to.equal(testing.statuses.queue[1]);
     });
 
     /**
      * Check if status has changed (using named function)
      */
-    it(`Asserting ${testing.statuses.queue[1]}() returning true`, function() {
-      assert.strictEqual(
-        status[testing.statuses.queue[1]](), true, 'Returns improper value');
+    it(`${testing.statuses.queue[1]}() returning true`, function() {
+      expect(status[testing.statuses.queue[1]]()).to.be.true;
     });
 
     /**
      * Check if status has changed (using named function)
      */
-    it(`Asserting ${testing.statuses.queue[0]}() returning false`, function() {
-      assert.strictEqual(
-        status[testing.statuses.queue[0]](),
-        false, 'Returns improper value');
+    it(`${testing.statuses.queue[0]}() returning false`, function() {
+      expect(status[testing.statuses.queue[0]]()).to.be.false;
     });
 
     /**
      * Set to initial
      */
-    it(`Asserting toInitial() changing status to "${testing.statuses.queue[0]}" and returning undefined`, function() {
-      assert.strictEqual(status.toInitial(), undefined, 'Returns improper value');
-      assert.strictEqual(status.getCurrent(), testing.statuses.queue[0], 'Status is improper');
+    it(`toInitial() changes status to "${testing.statuses.queue[0]}"`, function() {
+      expect(status.toInitial(), 'Returns improper value').to.be.undefined;
+      expect(status.getCurrent(), 'Status is improper').to.equal(testing.statuses.queue[0]);
     });
 
     /**
      * 1->3 by force
      */
-    it(`Asserting ${testing.statuses.queue[2]}(true, true) moving directly to the "${testing.statuses.queue[2]}" and returning true`, function() {
-      assert.strictEqual(
-        status[testing.statuses.queue[2]](true, true),
-        true, 'Return value is improper')
-      assert.strictEqual(status.getCurrent(), testing.statuses.queue[2], 'Status is improper');
+    it(`${testing.statuses.queue[2]}(true, true) moving directly to the "${testing.statuses.queue[2]}"`, function() {
+      expect(status[testing.statuses.queue[2]](true, true), 'Return value is improper').to.be.true;
+      expect(status.getCurrent(), 'Status is improper').to.equal(testing.statuses.queue[2]);
     });
 
     /**
      * Check if 2<3, 3==3, and 3<4 (Really. It's that simple)
      */
-    it(`Asserting before(x) returning boolean that points if the current status if before the given state x`, function() {
-      assert.strictEqual(status.before(testing.statuses.queue[1]), false, 'Returns improper value, when after');
-      assert.strictEqual(status.before(testing.statuses.queue[2]), false, 'Returns improper value, when equals');
-      assert.strictEqual(status.before(testing.statuses.queue[3]), true, 'Returns improper value, when before');
+    it(`before(x)`, function() {
+      expect(status.before(testing.statuses.queue[1]), 'Returns improper value, when after').to.be.false;
+      expect(status.before(testing.statuses.queue[2]), 'Returns improper value, when equals').to.be.false;
+      expect(status.before(testing.statuses.queue[3]), 'Returns improper value, when before').to.be.true;
     });
 
     /**
      * Check if 2<3, 3==3, and 3<4 (Really. It's that simple)
      */
-    it(`Asserting after(x) returning boolean that points if the current status if after the given state x`, function() {
-      assert.strictEqual(status.before(testing.statuses.queue[1]), false, 'Returns improper value, when after');
-      assert.strictEqual(status.before(testing.statuses.queue[2]), false, 'Returns improper value, when equals');
-      assert.strictEqual(status.before(testing.statuses.queue[3]), true, 'Returns improper value, when before');
+    it(`after(x)`, function() {
+      expect(status.after(testing.statuses.queue[1]), 'Returns improper value, when after').to.be.true;
+      expect(status.after(testing.statuses.queue[2]), 'Returns improper value, when equals').to.be.false;
+      expect(status.after(testing.statuses.queue[3]), 'Returns improper value, when before').to.be.false;
     });
+  });
 
-    /**
-     * @TODO move this test to the separate section
-     */
-    it(`Asserting before(x) and after(x) throwing FloorenceStateError after improper value of x`, function() {
-      assert.throws(status.before.bind(this, 'abracadabra'), FloorenceStateError, 'There is no such a status like abracadabra');
-      assert.throws(status.after.bind(this, 234), FloorenceStateError, 'There is no such a status like 234');
+  describe('# Errors', function() {
+    it('before() and after()', function() {
+
+      before(function() {
+        status = new Status(testing.statuses.queue);
+      });
+
+      expect(status.before.bind(this, 'abracadabra')).to.throw(FloorenceStateError, 'There is no such a status like abracadabra');
+      expect(status.after.bind(this, 234)).to.throw(FloorenceStateError, 'There is no such a status like 234');
     });
   });
 });
 
-
+/**
+ * @TODO Finish changing assert to expect
+ */
 
 describe('StateManager - UrlsQueue', function() {
   describe('# Ordered tests', function() {

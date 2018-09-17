@@ -1,6 +1,7 @@
 
 import FloorenceError from './../../src/Errors/FloorenceError.js';
 import { assert } from 'chai'
+import { expect } from 'chai'
 
 
 let testing = {
@@ -31,12 +32,14 @@ describe('Errors', function() {
       /**
        * Set expected output
        */
-      let expMessage = test.expected.message || message;
-      let expNumber = test.expected.number || number;
-      let expUserMessage = test.expected.userMessage || userMessage;
-      let expGetUserMessage = expUserMessage || 'Whoops... Something went wrong';
+      let expected = {
+        message: test.expected.message || message,
+        number: test.expected.number || number,
+        userMessage: test.expected.userMessage || userMessage,
+      }
+      expected.getUserMessage = test.developerMode ? expected.message : (expected.userMessage || 'Whoops... Something went wrong');
 
-      it(`Asserting catching Floorence Error with proper values #${index}`, function() {
+      it(`Expecting to catch Floorence Error with proper values #${index}`, function() {
         try {
           throw new FloorenceError(message, {
             number: number,
@@ -44,11 +47,11 @@ describe('Errors', function() {
             developerMode: developerMode
           });
         } catch(error) {
-          assert.strictEqual(error.name, 'FloorenceError', 'Wrong error type');
-          assert.strictEqual(error.message, expMessage, 'Messages are not equal');
-          assert.strictEqual(error.userMessage, expUserMessage, 'User Messages are not equal');
-          assert.strictEqual(error.number, expNumber, 'Numbers are not equal');
-          assert.strictEqual(error.getUserMessage(), expGetUserMessage, 'getUserMessage returns improper value');
+          expect(error.name, 'Wrong error type').to.equal('FloorenceError');
+          expect(error.message, 'Message is incorrect').to.equal(expected.message);
+          expect(error.number, 'Number is incorrect').to.equal(expected.number);
+          expect(error.userMessage, 'User Message is incorrect').to.equal(expected.userMessage);
+          expect(error.getUserMessage(), 'getUserMessage returns improper value').to.equal(expected.getUserMessage);
         }
       });
 

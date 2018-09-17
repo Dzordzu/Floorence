@@ -7,4 +7,4 @@ In this directory we store all of the unit tests. Before building a new module. 
 `` npm run test-unit ``
 
 ## Chai
-You should use 'assert style' for the most unit tests
+You should use 'expect style' for the most unit tests
