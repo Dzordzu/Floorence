@@ -1,6 +1,6 @@
 const path = require('path');
 
-const PKGNAME = 'florence.js'
+const PKGNAME = 'floorence.js'
 
 module.exports = {
   entry: './src/index.js',

@@ -2,7 +2,7 @@
   "name": "floorence",
   "version": "0.1.2",
   "description": "JS library for PJAX. The beautiful one",
-  "main": "dist/florence.js",
+  "main": "dist/floorence.js",
   "scripts": {
     "build": "webpack",
     "dev": "webpack --dev --watch",
