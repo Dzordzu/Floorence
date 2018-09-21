@@ -1,5 +1,4 @@
 
-import { assert } from 'chai'
 import { expect } from 'chai'
 import Status from './../../src/StateManager/Status.js';
 import UrlsQueue from './../../src/StateManager/UrlsQueue.js';
@@ -189,10 +188,6 @@ describe('StateManager - Statuses', function() {
     });
   });
 });
-
-/**
- * @TODO Finish changing assert to expect
- */
 
 describe('StateManager - UrlsQueue', function() {
   describe('# Ordered tests', function() {
