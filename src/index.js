@@ -32,8 +32,7 @@ class Floorence {
    */
   loadUrl() {}
   /**
-   * [handleResponse description]
-   * @return {[type]} [description]
+   * Function
    */
   handleResponse() {}
   /**
@@ -50,6 +49,10 @@ class Floorence {
    * It also closes loader using floorence.transition.close method
    */
   cancel() {}
+  /**
+   * Sets options
+   */
+  setOptions() {}
 
 
 
